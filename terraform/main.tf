@@ -1,3 +1,10 @@
+terraform {
+  backend "s3" {
+    bucket = "tfstate"
+    key    = "rankineuk"
+    region = "eu-west-1"
+  }
+}
 variable "aws_region" {
   type    = string
   default = "eu-west-1"
