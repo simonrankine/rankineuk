@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket = "tfstate"
-    key    = "rankineuk"
+    bucket = "rankineuk-tfstate"
+    key    = "rankineuk/key"
     region = "eu-west-1"
   }
 }
