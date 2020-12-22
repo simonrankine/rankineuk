@@ -5,6 +5,7 @@ terraform {
     region = "eu-west-1"
   }
 }
+
 variable "aws_region" {
   type    = string
   default = "eu-west-1"
@@ -25,8 +26,71 @@ variable "instance_type" {
   default = "t2.nano"
 }
 
+variable "deployment_bucket_name" {
+  type    = string
+  default = "rankineuk-deployment-bucket"
+}
+
 provider "aws" {
   region = var.aws_region
+}
+
+resource "aws_s3_bucket" "deployment_bucket" {
+  bucket = var.deployment_bucket_name
+  acl    = "private"
+  tags = {
+    Name = "rankineuk_deployment_bucket"
+  }
+}
+
+resource "aws_iam_role" "rankineuk_ec2_iam_role" {
+  name = "rankineuk_ec2_iam_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+
+}
+
+resource "aws_iam_role_policy" "deployment_bucket_policy" {
+  name   = "rankineuk_deployment_bucket_policy"
+  role   = aws_iam_role.rankineuk_ec2_iam_role.id
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket"],
+      "Resource": ["arn:aws:s3:::${var.deployment_bucket_name}"]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": ["arn:aws:s3:::${var.deployment_bucket_name}/*"]
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_instance_profile" "rankineuk_instance_profile" {
+  name = "rankineuk_instance_profile"
+  role = aws_iam_role.rankineuk_ec2_iam_role.id
 }
 
 resource "aws_vpc" "rankineuk" {
@@ -112,6 +176,7 @@ resource "aws_key_pair" "simon_key" {
 resource "aws_instance" "rankineuk_server" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = var.instance_type
+  iam_instance_profile        = aws_iam_instance_profile.rankineuk_instance_profile.id
   vpc_security_group_ids      = [aws_security_group.allow_ssh.id]
   associate_public_ip_address = true
   key_name                    = aws_key_pair.simon_key.key_name
