@@ -12,7 +12,38 @@ resource "aws_codedeploy_deployment_config" "rankineuk_deployment_config" {
   }
 }
 
+resource "aws_iam_role" "code_deploy_iam_role" {
+  name = "code_deploy_iam_role"
 
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "codedeploy.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_codedeploy_deployment_group" "rankineuk_deploy_group" {
+  app_name               = aws_codedeploy_app.rankineuk_app.name
+  deployment_group_name  = "live"
+  service_role_arn       = aws_iam_role.code_deploy_iam_role.arn
+  deployment_config_name = aws_codedeploy_deployment_config.rankineuk_deployment_config.id
+
+  ec2_tag_filter {
+    key   = "Project"
+    type  = "KEY_AND_VALUE"
+    value = "rankineuk"
+  }
+}
 
 resource "aws_s3_bucket" "deployment_bucket" {
   bucket = var.deployment_bucket_name
