@@ -8,7 +8,7 @@ resource "aws_codedeploy_deployment_config" "rankineuk_deployment_config" {
 
   minimum_healthy_hosts {
     type  = "HOST_COUNT"
-    value = 1
+    value = 0
   }
 }
 
