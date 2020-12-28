@@ -32,6 +32,11 @@ resource "aws_iam_role" "code_deploy_iam_role" {
 EOF
 }
 
+resource "aws_iam_role_policy_attachment" "AWSCodeDeployRole" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+  role       = aws_iam_role.code_deploy_iam_role.name
+}
+
 resource "aws_codedeploy_deployment_group" "rankineuk_deploy_group" {
   app_name               = aws_codedeploy_app.rankineuk_app.name
   deployment_group_name  = "live"
