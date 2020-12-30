@@ -89,7 +89,7 @@ resource "aws_instance" "rankineuk_server" {
   user_data                   = <<EOF
 #!/bin/bash
 sudo apt-get update
-sudo apt-get install -y wget
+sudo apt-get install -y wget ruby
 cd /home/ubuntu
 wget https://aws-codedeploy-${var.aws_region}.s3.${var.aws_region}.amazonaws.com/latest/install
 chmod +x ./install
