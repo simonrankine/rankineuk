@@ -51,8 +51,8 @@ on:
   pull_request:
 
 jobs:
-  deploy:
-    name: 'Deploy'
+  terraform:
+    name: 'Terraform'
     runs-on: ubuntu-latest
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
@@ -104,7 +104,7 @@ jobs:
 
     - name: Codedeploy
       uses: chrislennon/action-aws-cli@v1.1
-      run: aws create-delpoyment --application-name rankineuk --deployment-group-name live --revision $(git rev-parse --short HEAD)
+      run: "aws create-delpoyment --application-name rankineuk --deployment-group-name live --revision revisionType=s3,s3Location={bucket=rankineuk_deployment_bucket}"
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
