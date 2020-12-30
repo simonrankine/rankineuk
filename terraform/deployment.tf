@@ -41,7 +41,7 @@ resource "aws_codedeploy_deployment_group" "rankineuk_deploy_group" {
   app_name               = aws_codedeploy_app.rankineuk_app.name
   deployment_group_name  = "live"
   service_role_arn       = aws_iam_role.code_deploy_iam_role.arn
-  deployment_config_name = aws_codedeploy_deployment_config.rankineuk_deployment_config.id
+  deployment_config_name = "CodeDeployDefault.AllAtOnce"
 
   ec2_tag_filter {
     key   = "Project"
