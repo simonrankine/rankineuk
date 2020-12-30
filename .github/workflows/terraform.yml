@@ -100,12 +100,13 @@ jobs:
       working-directory: terraform
 
     - name: Create zip archive
-      run: tar -czf /tmp/artefact.tar.gz .
+      run: tar -czf /tmp/${{github.sha}}-${{github.run_id}}.tar.gz .
 
-    - name: Codedeploy
-      uses: chrislennon/action-aws-cli@v1.1
-      run: "aws create-delpoyment --application-name rankineuk --deployment-group-name live --revision revisionType=s3,s3Location={bucket=rankineuk_deployment_bucket}"
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-1
+    - name: Push artefact to S3
+      run: aws s3 mv /tmp/${{github.sha}}-${{github.run_id}}.tar.gz s3://rankineuk-deployment-bucket
+
+    - name: Create Code Deploy Deployment
+      run: "aws deploy create-deployment \
+        --application-name rankineuk \
+        --deployment-group-name live \
+        --s3-location bucket=rankineuk-deployment-bucket,key=${{github.sha}}-${{github.run_id}}.tar.gz,bundleType=tgz"
