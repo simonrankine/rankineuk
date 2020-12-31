@@ -100,7 +100,7 @@ jobs:
       working-directory: terraform
 
     - name: Create zip archive
-      run: tar -czf /tmp/${{github.sha}}-${{github.run_id}}.tar.gz .
+      run: tar --exclude='./.git' -czf /tmp/${{github.sha}}-${{github.run_id}}.tar.gz .
 
     - name: Push artefact to S3
       run: aws s3 mv /tmp/${{github.sha}}-${{github.run_id}}.tar.gz s3://rankineuk-deployment-bucket
