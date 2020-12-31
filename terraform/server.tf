@@ -57,6 +57,58 @@ resource "aws_security_group" "allow_ssh" {
   }
 }
 
+resource "aws_security_group" "allow_http" {
+  name        = "allow_http"
+  description = "Allow HTTP inbound traffic"
+  vpc_id      = aws_vpc.rankineuk.id
+
+  ingress {
+    description = "HTTP from anywhere"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name    = "allow_http",
+    Project = "rankineuk"
+  }
+}
+
+resource "aws_security_group" "allow_https" {
+  name        = "allow_https"
+  description = "Allow HTTPS inbound traffic"
+  vpc_id      = aws_vpc.rankineuk.id
+
+  ingress {
+    description = "HTTPS from anywhere"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name    = "allow_http",
+    Project = "rankineuk"
+  }
+}
+
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -79,10 +131,14 @@ resource "aws_key_pair" "simon_key" {
 }
 
 resource "aws_instance" "rankineuk_server" {
-  ami                         = data.aws_ami.ubuntu.id
-  instance_type               = var.instance_type
-  iam_instance_profile        = aws_iam_instance_profile.rankineuk_instance_profile.id
-  vpc_security_group_ids      = [aws_security_group.allow_ssh.id]
+  ami                  = data.aws_ami.ubuntu.id
+  instance_type        = var.instance_type
+  iam_instance_profile = aws_iam_instance_profile.rankineuk_instance_profile.id
+  vpc_security_group_ids = [
+    aws_security_group.allow_ssh.id,
+    aws_security_group.allow_http.id,
+    aws_security_group.allow_https.id
+  ]
   associate_public_ip_address = true
   key_name                    = aws_key_pair.simon_key.key_name
   subnet_id                   = aws_subnet.rankineuk.id
