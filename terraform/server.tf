@@ -157,4 +157,9 @@ sudo service codedeploy-agent start
     Name    = "rankineuk"
     Project = "rankineuk"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
 }

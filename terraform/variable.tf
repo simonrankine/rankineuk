@@ -22,3 +22,8 @@ variable "deployment_bucket_name" {
   type    = string
   default = "rankineuk-deployment-bucket"
 }
+
+variable "domain_name" {
+  type    = string
+  default = "rankine.uk"
+}
