@@ -1,5 +1,2 @@
 #!/bin/bash
-pwd
-ls ..
-ls ../ansible
-ansible-playbook ansible/playbook.yml
+ansible-playbook /tmp/ansible/playbook.yml

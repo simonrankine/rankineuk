@@ -1,5 +1,5 @@
 ---
-app_user: "sammy"
+app_user: "ubuntu"
 http_host: "rankine.uk"
 http_conf: "rankine.uk.conf"
 http_port: "80"

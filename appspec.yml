@@ -1,10 +1,14 @@
 version: 0.0
 os: linux
+files:
+  - source: ansible
+    destination: /tmp/ansible
 hooks:
   BeforeInstall:
     - location: codedeploy_scripts/install_dependencies.sh
       timeout: 300
       runas: root
+  AfterInstall:
     - location: codedeploy_scripts/ansible.sh
       timeout: 300
       runas: root
