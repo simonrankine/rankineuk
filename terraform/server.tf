@@ -26,6 +26,11 @@ EOF
 
 }
 
+resource "aws_iam_role_policy_attachment" "test-attach" {
+  role       = aws_iam_role.rankineuk_ec2_iam_role.name
+  policy_arn = aws_iam_policy.tls_certs.arn
+}
+
 resource "aws_iam_instance_profile" "rankineuk_instance_profile" {
   name = "rankineuk_instance_profile"
   role = aws_iam_role.rankineuk_ec2_iam_role.id

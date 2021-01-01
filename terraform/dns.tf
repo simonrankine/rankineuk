@@ -84,3 +84,30 @@ resource "aws_acm_certificate_validation" "www" {
   certificate_arn         = aws_acm_certificate.www.arn
   validation_record_fqdns = [for record in aws_route53_record.www-validation : record.fqdn]
 }
+
+resource "aws_iam_policy" "tls_certs" {
+  name = "rankineuk_tls_certs"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "acm:DescribeCertificate",
+                "acm:GetCertificate"
+            ],
+            "Resource": "arn:aws:acm:eu-west-1:473842075523:certificate/ea027f7d-64ff-4545-bb4d-0c9be5242a49"
+        },{
+            "Effect": "Allow",
+            "Action": [
+                "acm:DescribeCertificate",
+                "acm:GetCertificate"
+            ],
+            "Resource": " arn:aws:acm:eu-west-1:473842075523:certificate/091ee9d8-7e9b-446d-94c8-85d4fb52ec0d"
+        }
+    ]
+}
+EOF
+}
