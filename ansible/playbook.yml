@@ -13,6 +13,17 @@
     - name: Install Apache
       apt: name=apache2 update_cache=yes state=latest
 
+    - name: Install certbot
+      community.general.snap: 
+        name: certbot
+        classic: yes
+
+    - name: Create symbolic link for certbot
+      file:
+        src: "/snap/bin/certbot"
+        dest: "/usr/bin/certbot"
+        state: link
+
     - name: Create document root
       file:
         path: "/var/www/{{ http_host }}"
@@ -38,6 +49,9 @@
       shell: /usr/sbin/a2dissite 000-default.conf
       when: disable_default
       notify: Reload Apache
+
+    - name: Run certbot
+      shell: certbot --apache
 
     - name: "UFW - Allow HTTP on port {{ http_port }}"
       ufw:
