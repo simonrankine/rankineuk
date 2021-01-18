@@ -51,7 +51,7 @@
       notify: Reload Apache
 
     - name: Run certbot
-      shell: certbot --apache
+      shell: certbot --apache -n --domains {{ domains }}
 
     - name: "UFW - Allow HTTP on port {{ http_port }}"
       ufw:

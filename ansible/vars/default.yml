@@ -4,3 +4,4 @@ http_host: "rankine.uk"
 http_conf: "rankine.uk.conf"
 http_port: "80"
 disable_default: true
+domains: "rankine.uk,www.rankine.uk"
