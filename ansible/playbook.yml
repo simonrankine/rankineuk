@@ -58,6 +58,11 @@
         rule: allow
         port: "{{ http_port }}"
         proto: tcp
+    
+  roles:
+    - role: christiangda.amazon_cloudwatch_agent
+      vars:
+        cwa_agent_mode: "ec2"
 
   handlers:
     - name: Reload Apache
