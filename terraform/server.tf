@@ -31,14 +31,14 @@ resource "aws_iam_role_policy_attachment" "tls_certs" {
   policy_arn = aws_iam_policy.tls_certs.arn
 }
 
+resource "aws_iam_role_policy_attachment" "cloudwatch_agent" {
+  role       = aws_iam_role.rankineuk_ec2_iam_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+}
+
 resource "aws_iam_instance_profile" "rankineuk_instance_profile" {
   name = "rankineuk_instance_profile"
   role = aws_iam_role.rankineuk_ec2_iam_role.id
-}
-
-resource "aws_iam_instance_profile" "cloudwatch_agent" {
-  name = "rankineuk_instance_profile"
-  role = "arn:aws:iam::aws:policy/CloudWatchAgentAdminPolicy"
 }
 
 resource "aws_security_group" "allow_ssh" {
