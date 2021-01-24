@@ -10,5 +10,5 @@ hooks:
       runas: root
   AfterInstall:
     - location: codedeploy_scripts/ansible.sh
-      timeout: 500
+      timeout: 800
       runas: root
